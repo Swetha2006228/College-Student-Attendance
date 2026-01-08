@@ -12,8 +12,6 @@ export default function ClassPage() {
   const [classname, setClassname] = useState("");
   const [section, setSection] = useState("");
   const [classid, setClassid] = useState("");
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [editStudentId, setEditStudentId] = useState(null);
 
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
@@ -29,6 +27,8 @@ export default function ClassPage() {
   const [popupClassName, setPopupClassName] = useState("");
   const [popupSection, setPopupSection] = useState("");
   const [popupYear, setPopupYear] = useState("");
+  const [showEditStudentModal, setShowEditStudentModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   // ---------------- FETCH YEARS ----------------
   const fetchYears = useCallback(async () => {
@@ -115,22 +115,16 @@ export default function ClassPage() {
   }, [fetchStudents]);
   const handleAddStudent = async () => {
     if (!studentName.trim()) return;
-
+    if (!classid) return alert("Select class first");
     const token = localStorage.getItem("token");
 
-    const url = isEditMode
-      ? `http://localhost:3000/api/student/update/${editStudentId}`
-      : `http://localhost:3000/api/student/add`;
-
-    const method = isEditMode ? "PUT" : "POST";
-
-    const res = await fetch(url, {
-      method,
+    const res = await fetch("http://localhost:3000/api/student/create", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ name: studentName }),
+      body: JSON.stringify({ name: studentName, classid: classid }),
     });
 
     const data = await res.json();
@@ -139,8 +133,6 @@ export default function ClassPage() {
       fetchStudents();
       setStudentName("");
       setShowAddStudentModal(false);
-      setIsEditMode(false);
-      setEditStudentId(null);
     } else {
       alert(data.message);
     }
@@ -373,9 +365,8 @@ export default function ClassPage() {
 
             <button
               onClick={() => {
-                setStudentName(""); 
-                setIsEditMode(false); 
-                setEditStudentId(null); 
+                setStudentName("");
+
                 setShowAddStudentModal(true);
               }}
               className='text-blue-400 flex items-center gap-1'
@@ -398,10 +389,9 @@ export default function ClassPage() {
                     size={16}
                     className='text-yellow-400 cursor-pointer'
                     onClick={() => {
-                      setStudentName(s.name); 
-                      setEditStudentId(s._id); 
-                      setIsEditMode(true); 
-                      setShowAddStudentModal(true);
+                      setSelectedStudent(s);
+                      setStudentName(s.name);
+                      setShowEditStudentModal(true);
                     }}
                   />
 
@@ -507,6 +497,53 @@ export default function ClassPage() {
   transition-all duration-300 focus:outline-none hover:bg-blue-600 active:scale-[0.98]'
             >
               Save
+            </button>
+          </div>
+        </PopupModal>
+      )}
+      {showEditStudentModal && selectedStudent && (
+        <PopupModal
+          title='Edit Student'
+          onClose={() => setShowEditStudentModal(false)}
+        >
+          <input
+            type='text'
+            value={studentName}
+            onChange={(e) => setStudentName(e.target.value)}
+            className='w-full p-2 mb-4 rounded bg-[#111] text-white border border-yellow-500'
+          />
+
+          <div className='flex justify-end'>
+            <button
+              onClick={async () => {
+                const token = localStorage.getItem("token");
+
+                const res = await fetch(
+                  `http://localhost:3000/api/student/edit-studentname/classid/${classid}/studentid/${selectedStudent._id}`,
+                  {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ name: studentName }),
+                  }
+                );
+
+                const data = await res.json();
+
+                if (data.success) {
+                  fetchStudents();
+                  setShowEditStudentModal(false);
+                  setSelectedStudent(null);
+                  setStudentName("");
+                } else {
+                  alert(data.message);
+                }
+              }}
+              className='px-4 py-2 bg-yellow-500 text-black rounded-md'
+            >
+              Update
             </button>
           </div>
         </PopupModal>
