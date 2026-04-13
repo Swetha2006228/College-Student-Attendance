@@ -220,8 +220,8 @@ Create a `.env` file inside the `backend/` folder:
 ```env
 MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/attendancedb
 JWT_SECRET=your_jwt_secret_key_here
-JWT_EXPIRES_IN=7d
-PORT=5000
+JWT_EXPIRES_IN=1h
+PORT=3000
 ```
 
 ### 3. Run the Backend
