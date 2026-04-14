@@ -17,7 +17,7 @@ export default function AddTeacherPage() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:3000/api/add-teacher", {
+      const res = await fetch(`${API_URL}/api/add-teacher`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 
 import PopupModal from "../components/PopupModal";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-
+import API_URL from "../config";
 export default function ClassPage() {
   const [years, setYears] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -34,7 +34,7 @@ export default function ClassPage() {
   const fetchYears = useCallback(async () => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:3000/get-allyear", {
+    const res = await fetch("${API_URL}/get-allyear", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -57,7 +57,7 @@ export default function ClassPage() {
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `http://localhost:3000/get-classes-by-year?year=${year}`,
+      `${API_URL}/get-classes-by-year?year=${year}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ export default function ClassPage() {
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `http://localhost:3000/get-allsection?year=${year}&classname=${classname}`,
+      `${API_URL}/get-allsection?year=${year}&classname=${classname}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -92,7 +92,7 @@ export default function ClassPage() {
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `http://localhost:3000/api/student/student-list?classid=${classid}`,
+      `${API_URL}/api/student/student-list?classid=${classid}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -118,7 +118,7 @@ export default function ClassPage() {
     if (!classid) return alert("Select class first");
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:3000/api/student/create", {
+    const res = await fetch(`${API_URL}/api/student/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +144,7 @@ export default function ClassPage() {
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `http://localhost:3000/api/student/deletestudent/studentid/${studentid}`,
+      `${API_URL}/api/student/deletestudent/studentid/${studentid}`,
       {
         method: "DELETE",
         headers: {
@@ -163,7 +163,7 @@ export default function ClassPage() {
     if (!classid || !date) return;
 
     const res = await fetch(
-      `http://localhost:3000/api/attendance/get?classid=${classid}&date=${date}`
+      `${API_URL}/api/attendance/get?classid=${classid}&date=${date}`
     );
     const data = await res.json();
 
@@ -199,7 +199,7 @@ export default function ClassPage() {
       return alert("Teacher ID missing. Please login again.");
     }
 
-    const res = await fetch("http://localhost:3000/create-class", {
+    const res = await fetch(`${API_URL}/create-class`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -232,7 +232,7 @@ export default function ClassPage() {
       status: status ? "Present" : "Absent",
     }));
 
-    const res = await fetch("http://localhost:3000/api/attendance/mark", {
+    const res = await fetch(`${API_URL}/api/attendance/mark`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -527,7 +527,7 @@ export default function ClassPage() {
                 const token = localStorage.getItem("token");
 
                 const res = await fetch(
-                  `http://localhost:3000/api/student/edit-studentname/classid/${classid}/studentid/${selectedStudent._id}`,
+                  `${API_URL}/api/student/edit-studentname/classid/${classid}/studentid/${selectedStudent._id}`,
                   {
                     method: "PUT",
                     headers: {
