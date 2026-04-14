@@ -34,7 +34,7 @@ export default function ClassPage() {
   const fetchYears = useCallback(async () => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("${API_URL}/get-allyear", {
+    const res = await fetch(`${API_URL}/get-allyear`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

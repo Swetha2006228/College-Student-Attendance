@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PasswordInput from "../components/PasswordInput";
-
+import API_URL from "../config";
 export default function AddTeacherPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
